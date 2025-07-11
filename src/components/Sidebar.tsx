@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   BarChart3, 
@@ -18,21 +19,32 @@ interface SidebarProps {
 
 const Sidebar = ({ isDark }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activeItem, setActiveItem] = useState('dashboard');
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'users', label: 'Users', icon: Users },
-    { id: 'activity', label: 'Activity', icon: Activity },
-    { id: 'trends', label: 'Trends', icon: TrendingUp },
-    { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/' },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3, path: '/analytics' },
+    { id: 'users', label: 'Users', icon: Users, path: '/users' },
+    { id: 'activity', label: 'Activity', icon: Activity, path: '/activity' },
+    { id: 'trends', label: 'Trends', icon: TrendingUp, path: '/trends' },
+    { id: 'notifications', label: 'Notifications', icon: Bell, path: '/notifications' },
+    { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
   ];
 
   const sidebarVariants = {
     expanded: { width: '240px' },
     collapsed: { width: '80px' }
+  };
+
+  const getActiveItem = () => {
+    const currentPath = location.pathname;
+    const activeItem = menuItems.find(item => item.path === currentPath);
+    return activeItem?.id || 'dashboard';
+  };
+
+  const handleNavigation = (path: string, id: string) => {
+    navigate(path);
   };
 
   return (
@@ -88,7 +100,7 @@ const Sidebar = ({ isDark }: SidebarProps) => {
         <ul className="space-y-2">
           {menuItems.map((item, index) => {
             const Icon = item.icon;
-            const isActive = activeItem === item.id;
+            const isActive = getActiveItem() === item.id;
             
             return (
               <motion.li
@@ -102,7 +114,7 @@ const Sidebar = ({ isDark }: SidebarProps) => {
                 }}
               >
                 <motion.button
-                  onClick={() => setActiveItem(item.id)}
+                  onClick={() => handleNavigation(item.path, item.id)}
                   className={`w-full flex items-center p-3 rounded-xl transition-all duration-300 group ${
                     isActive
                       ? isDark

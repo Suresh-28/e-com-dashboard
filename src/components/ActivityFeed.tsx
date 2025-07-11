@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { User, DollarSign, TrendingUp, Bell } from 'lucide-react';
 
 interface ActivityFeedProps {
@@ -8,6 +9,8 @@ interface ActivityFeedProps {
 }
 
 const ActivityFeed = ({ isDark }: ActivityFeedProps) => {
+  const navigate = useNavigate();
+
   const activities = [
     {
       id: 1,
@@ -43,6 +46,10 @@ const ActivityFeed = ({ isDark }: ActivityFeedProps) => {
     },
   ];
 
+  const handleViewAll = () => {
+    navigate('/activity');
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -61,6 +68,7 @@ const ActivityFeed = ({ isDark }: ActivityFeedProps) => {
           Recent Activity
         </h3>
         <motion.button
+          onClick={handleViewAll}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className={`text-sm ${
@@ -89,7 +97,7 @@ const ActivityFeed = ({ isDark }: ActivityFeedProps) => {
               }`}
             >
               <motion.div
-                className={`p-2 rounded-lg ${activity.color}`}
+                className={`p-2 rounded-lg ${activity.color} flex items-center justify-center`}
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
