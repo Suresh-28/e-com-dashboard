@@ -35,19 +35,6 @@ const Sidebar = ({ isDark }: SidebarProps) => {
     collapsed: { width: '80px' }
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: (i: number) => ({
-      opacity: 1,
-      x: 0,
-      transition: {
-        delay: i * 0.1,
-        type: "spring",
-        stiffness: 100,
-      }
-    })
-  };
-
   return (
     <motion.div
       className={`h-screen ${
@@ -106,10 +93,13 @@ const Sidebar = ({ isDark }: SidebarProps) => {
             return (
               <motion.li
                 key={item.id}
-                custom={index}
-                variants={itemVariants}
-                initial="hidden"
-                animate="visible"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{
+                  delay: index * 0.1,
+                  type: "spring",
+                  stiffness: 100,
+                }}
               >
                 <motion.button
                   onClick={() => setActiveItem(item.id)}
