@@ -50,6 +50,10 @@ const ActivityFeed = ({ isDark }: ActivityFeedProps) => {
     navigate('/activity');
   };
 
+  const handleLoadMore = () => {
+    navigate('/activity');
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -126,6 +130,20 @@ const ActivityFeed = ({ isDark }: ActivityFeedProps) => {
           );
         })}
       </div>
+
+      {/* Load More Button */}
+      <motion.button
+        onClick={handleLoadMore}
+        className={`w-full mt-4 py-3 rounded-xl font-medium transition-all duration-300 ${
+          isDark
+            ? 'bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white'
+            : 'bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-slate-700'
+        }`}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+      >
+        Load More Activities
+      </motion.button>
     </motion.div>
   );
 };

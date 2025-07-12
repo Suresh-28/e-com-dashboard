@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -11,16 +10,49 @@ import {
   Phone,
   MapPin,
   Calendar,
-  Shield,
   Crown,
   Star
 } from 'lucide-react';
 import PageLayout from '../components/PageLayout';
 import AnimatedCursor from '../components/AnimatedCursor';
+import AddUserModal from '../components/AddUserModal';
 
 const Users = () => {
   const [isDark, setIsDark] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  
+  const [users, setUsers] = useState(() => {
+    const savedUsers = localStorage.getItem('dashboardUsers');
+    return savedUsers ? JSON.parse(savedUsers) : [
+      {
+        id: 1,
+        name: 'Sarah Johnson',
+        email: 'sarah.johnson@example.com',
+        role: 'Premium User',
+        avatar: 'SJ',
+        status: 'online',
+        joinDate: '2024-01-10',
+        location: 'New York, USA',
+        phone: '+1 (555) 123-4567',
+        color: 'from-purple-500 to-pink-600',
+        bgColor: 'from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20'
+      },
+      {
+        id: 2,
+        name: 'Michael Chen',
+        email: 'michael.chen@example.com',
+        role: 'Admin',
+        avatar: 'MC',
+        status: 'online',
+        joinDate: '2024-01-08',
+        location: 'San Francisco, USA',
+        phone: '+1 (555) 987-6543',
+        color: 'from-blue-500 to-indigo-600',
+        bgColor: 'from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20'
+      }
+    ];
+  });
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -35,6 +67,10 @@ const Users = () => {
     }
   }, [isDark]);
 
+  useEffect(() => {
+    localStorage.setItem('dashboardUsers', JSON.stringify(users));
+  }, [users]);
+
   const toggleTheme = () => {
     const newTheme = !isDark;
     setIsDark(newTheme);
@@ -47,40 +83,14 @@ const Users = () => {
     }
   };
 
-  const users = [
-    {
-      id: 1,
-      name: 'Sarah Johnson',
-      email: 'sarah.johnson@example.com',
-      role: 'Premium User',
-      avatar: 'SJ',
-      status: 'online',
-      joinDate: '2024-01-10',
-      location: 'New York, USA',
-      phone: '+1 (555) 123-4567',
-      color: 'from-purple-500 to-pink-600',
-      bgColor: 'from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20'
-    },
-    {
-      id: 2,
-      name: 'Michael Chen',
-      email: 'michael.chen@example.com',
-      role: 'Admin',
-      avatar: 'MC',
-      status: 'online',
-      joinDate: '2024-01-08',
-      location: 'San Francisco, USA',
-      phone: '+1 (555) 987-6543',
-      color: 'from-blue-500 to-indigo-600',
-      bgColor: 'from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20'
-    },
-    // Add more users...
-  ];
+  const addUser = (newUser: any) => {
+    setUsers(prev => [...prev, newUser]);
+  };
 
   const userStats = [
     {
       title: 'Total Users',
-      value: '24,680',
+      value: users.length.toLocaleString(),
       change: '+12.5%',
       icon: UsersIcon,
       color: 'from-blue-500 to-indigo-600'
@@ -94,19 +104,24 @@ const Users = () => {
     },
     {
       title: 'Premium Users',
-      value: '3,890',
+      value: users.filter(u => u.role === 'Premium User').length.toString(),
       change: '+15.3%',
       icon: Crown,
       color: 'from-purple-500 to-violet-600'
     },
     {
       title: 'Active Today',
-      value: '12,456',
+      value: users.filter(u => u.status === 'online').length.toString(),
       change: '+5.1%',
       icon: Star,
       color: 'from-orange-500 to-red-600'
     }
   ];
+
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
@@ -153,7 +168,7 @@ const Users = () => {
           })}
         </div>
 
-        {/* Search and Filter */}
+        {/* Search and Add User */}
         <div className="flex items-center space-x-4 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -170,22 +185,19 @@ const Users = () => {
             />
           </div>
           <motion.button
+            onClick={() => setIsAddUserModalOpen(true)}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className={`flex items-center space-x-2 px-4 py-3 rounded-xl border transition-all duration-300 ${
-              isDark
-                ? 'bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white'
-                : 'bg-white/80 border-slate-200 text-slate-600 hover:text-slate-900'
-            }`}
+            className="flex items-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-300"
           >
-            <Filter className="w-4 h-4" />
-            <span>Filter</span>
+            <UserPlus className="w-4 h-4" />
+            <span>Add User</span>
           </motion.button>
         </div>
 
         {/* Users Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {users.map((user, index) => (
+          {filteredUsers.map((user, index) => (
             <motion.div
               key={user.id}
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -252,7 +264,6 @@ const Users = () => {
                 </div>
               </div>
 
-              {/* Animated background gradient */}
               <motion.div
                 className={`absolute inset-0 bg-gradient-to-r ${user.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
                 initial={false}
@@ -260,6 +271,13 @@ const Users = () => {
             </motion.div>
           ))}
         </div>
+
+        <AddUserModal
+          isOpen={isAddUserModalOpen}
+          onClose={() => setIsAddUserModalOpen(false)}
+          onAddUser={addUser}
+          isDark={isDark}
+        />
       </PageLayout>
     </>
   );
