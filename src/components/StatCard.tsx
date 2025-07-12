@@ -58,59 +58,61 @@ const StatCard = ({
             {title}
           </p>
           
-          <div className="flex items-baseline mt-2">
-            <motion.span
-              className={`text-3xl font-bold ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: delay + 0.2, type: "spring" }}
+          <div className="flex items-center mt-2">
+            <motion.div
+              className={`p-2 rounded-lg ${color} mr-3`}
+              whileHover={{ 
+                rotate: 12,
+                scale: 1.1 
+              }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
-              {prefix}
-              <CountUp
-                end={value}
-                duration={2}
-                delay={delay}
-                separator=","
-                preserveValue
-              />
-              {suffix}
-            </motion.span>
+              <Icon className="w-4 h-4 text-white" />
+            </motion.div>
             
-            {change !== undefined && (
+            <div className="flex items-baseline">
               <motion.span
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: delay + 0.4 }}
-                className={`ml-2 text-sm font-medium flex items-center ${
-                  change >= 0 
-                    ? 'text-emerald-500' 
-                    : 'text-red-500'
+                className={`text-3xl font-bold ${
+                  isDark ? 'text-white' : 'text-gray-900'
                 }`}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: delay + 0.2, type: "spring" }}
               >
-                <motion.span
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  {change >= 0 ? '↗' : '↘'}
-                </motion.span>
-                {Math.abs(change)}%
+                {prefix}
+                <CountUp
+                  end={value}
+                  duration={2}
+                  delay={delay}
+                  separator=","
+                  preserveValue
+                />
+                {suffix}
               </motion.span>
-            )}
+              
+              {change !== undefined && (
+                <motion.span
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: delay + 0.4 }}
+                  className={`ml-2 text-sm font-medium flex items-center ${
+                    change >= 0 
+                      ? 'text-emerald-500' 
+                      : 'text-red-500'
+                  }`}
+                >
+                  <motion.span
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    {change >= 0 ? '↗' : '↘'}
+                  </motion.span>
+                  {Math.abs(change)}%
+                </motion.span>
+              )}
+            </div>
           </div>
         </div>
-        
-        <motion.div
-          className={`p-3 rounded-xl ${color}`}
-          whileHover={{ 
-            rotate: 12,
-            scale: 1.1 
-          }}
-          transition={{ type: "spring", stiffness: 300 }}
-        >
-          <Icon className="w-6 h-6 text-white" />
-        </motion.div>
       </div>
     </motion.div>
   );
