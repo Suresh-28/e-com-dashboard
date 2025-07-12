@@ -70,7 +70,7 @@ const StatCard = ({
               <Icon className="w-4 h-4 text-white" />
             </motion.div>
             
-            <div className="flex items-baseline">
+            <div className="flex flex-col">
               <motion.span
                 className={`text-3xl font-bold ${
                   isDark ? 'text-white' : 'text-gray-900'
@@ -92,10 +92,10 @@ const StatCard = ({
               
               {change !== undefined && (
                 <motion.span
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: delay + 0.4 }}
-                  className={`ml-2 text-sm font-medium flex items-center ${
+                  className={`text-sm font-medium flex items-center ${
                     change >= 0 
                       ? 'text-emerald-500' 
                       : 'text-red-500'
